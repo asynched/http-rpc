@@ -1,11 +1,11 @@
 import fs from 'node:fs/promises'
-import { registerProcedure } from '@/rpc'
+import { procedures } from '@/rpc'
 
-registerProcedure('readFile', async ({ filename }) => {
+procedures.readFile = async ({ filename }) => {
   const contents = await fs.readFile(filename, 'utf8')
 
   return {
     filename,
     contents: contents,
   }
-})
+}

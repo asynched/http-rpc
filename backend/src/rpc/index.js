@@ -3,12 +3,18 @@ import cors from 'cors'
 
 import logger from '@/config/logger'
 
-const procedures = {}
+const handlers = {}
 
-export const registerProcedure = (name, procedure) => {
-  logger.info(`Registered the procedure: "${name}"`)
-  procedures[name] = procedure
-}
+export const procedures = new Proxy(
+  {},
+  {
+    set(_target, name, value) {
+      logger.info(`Registered the procedure: "${name}"`)
+      handlers[name] = value
+      return true
+    },
+  }
+)
 
 const app = express()
 
@@ -19,7 +25,7 @@ app.post('/rpc/:procedure', async (request, response) => {
   const procedure = request.params.procedure
   const args = request.body
 
-  if (!procedures[procedure]) {
+  if (!handlers[procedure]) {
     logger.error(`The procedure: "${procedure}" is not registered`)
     return response.status(404).json({
       message: "The procedure you've requested does not exist",
@@ -30,7 +36,7 @@ app.post('/rpc/:procedure', async (request, response) => {
   }
 
   try {
-    const result = await procedures[procedure](args)
+    const result = await handlers[procedure](args)
     logger.success(`The procedure: "${procedure}" has been called successfully`)
     return response.status(200).json(result)
   } catch (error) {

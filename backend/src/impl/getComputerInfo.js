@@ -1,7 +1,7 @@
 import os from 'node:os'
-import { registerProcedure } from '@/rpc'
+import { procedures } from '@/rpc'
 
-registerProcedure('getComputerInfo', () => {
+procedures.getComputerInfo = () => {
   return {
     name: os.hostname(),
     platform: os.platform(),
@@ -18,4 +18,4 @@ registerProcedure('getComputerInfo', () => {
       uptime: os.uptime(),
     },
   }
-})
+}
