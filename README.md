@@ -15,11 +15,11 @@ console.log(output.contents)
 As for the back-end, registering procedures to be called by the rpc connector should be just as easy as the front-end. Ended up with an API that looks like this:
 
 ```js
-// As for the back-end, you register a procedure calling
-// the register procedure function, giving the procedure
-// a name and a callback handler.
-registerProcedure('procedureName', (args) => {
+// As for the back-end, you register a procedure attributing a
+// callback function to the procedure name. Because of proxies
+// we can afford to do this magic.
+procedures.readFile = ({ filename }) => {
   // Do something with the args
   return null
-})
+}
 ```
